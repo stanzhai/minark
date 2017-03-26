@@ -7,5 +7,7 @@ scalaVersion := "2.11.5"
 libraryDependencies ++= {
   val akkaVersion = "2.4.17"
 
-  Seq()
+  Seq(
+    "com.typesafe.akka" %% "akka-remote" % akkaVersion
+  )
 }
