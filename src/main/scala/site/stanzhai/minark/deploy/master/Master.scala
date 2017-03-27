@@ -16,7 +16,7 @@ class Master extends Actor {
 }
 
 object Master {
-  private val akkaSystemName = "minarkMaster"
+  private val actorSystemName = "minarkMaster"
   private val actorName = "master"
 
   def props(): Props = {
@@ -24,7 +24,7 @@ object Master {
   }
 
   def main(args: Array[String]): Unit = {
-    val akkaSystem = AkkaUtils.createActorSystem(akkaSystemName, "0.0.0.0", 3332)
+    val akkaSystem = AkkaUtils.createActorSystem(actorSystemName, "0.0.0.0", 3332)
     akkaSystem.actorOf(Master.props(), actorName)
   }
 }
