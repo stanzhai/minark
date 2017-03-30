@@ -17,5 +17,5 @@ object DeployMessages {
 
   case class RegisteredWorker() extends DeployMessage
 
-  case class HeartBeat(workerId: String) extends DeployMessage
+  case class Heartbeat(workerId: String) extends DeployMessage
 }
