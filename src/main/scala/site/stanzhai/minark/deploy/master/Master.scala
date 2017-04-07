@@ -1,25 +1,53 @@
 package site.stanzhai.minark.deploy.master
 
-import akka.actor.{Actor, Props}
+import scala.collection.mutable
+
+import akka.actor.{Actor, ActorRef, Props}
 import akka.actor.Terminated
 
 import site.stanzhai.minark.deploy.DeployMessages._
 import site.stanzhai.minark.util.AkkaUtils
 import site.stanzhai.minark.util.Logging
 
+
 /**
   * Created by stan on 2017/3/26.
   */
 class Master extends Actor with Logging {
 
+  val workers = new mutable.HashSet[WorkerInfo]()
+  val idToWorker = new mutable.HashMap[String, WorkerInfo]()
+  val actorToWorker = new mutable.HashMap[ActorRef, WorkerInfo]()
+
   override def receive: Receive = {
     case RegisterWorker(id, host, port, cores, memory) =>
       val worker = sender()
-      worker ! RegisteredWorker()
-      context.watch(worker)
-      logInfo(id)
+      val workerInfo = new WorkerInfo(id, host, port, cores, memory, worker)
+      if (registerWorker(workerInfo)) {
+        worker ! RegisteredWorker()
+        context.watch(worker)
+      }
     case Terminated(worker) =>
+      removeWorker(worker)
       logInfo(s"$worker terminated")
+  }
+
+  private def registerWorker(workerInfo: WorkerInfo): Boolean = {
+    workers += workerInfo
+    idToWorker(workerInfo.id) = workerInfo
+    actorToWorker(workerInfo.actorRef) = workerInfo
+    logInfo(s"${workerInfo.actorRef} registered to master")
+    true
+  }
+
+  private def removeWorker(actor: ActorRef) = {
+    if (actorToWorker.contains(actor)) {
+      val workerInfo = actorToWorker(actor)
+      workers -= workerInfo
+      idToWorker.remove(workerInfo.id)
+      actorToWorker.remove(actor)
+      logInfo(s"${workerInfo.actorRef} removed")
+    }
   }
 }
 
