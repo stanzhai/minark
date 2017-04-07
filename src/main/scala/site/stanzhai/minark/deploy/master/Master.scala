@@ -14,10 +14,12 @@ class Master extends Actor with Logging {
 
   override def receive: Receive = {
     case RegisterWorker(id, host, port, cores, memory) =>
-      sender() ! RegisteredWorker()
+      val worker = sender()
+      worker ! RegisteredWorker()
+      context.watch(worker)
       logInfo(id)
-    case Terminated(actor) =>
-      logInfo(s"$actor terminated")
+    case Terminated(worker) =>
+      logInfo(s"$worker terminated")
   }
 }
 

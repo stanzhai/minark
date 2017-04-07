@@ -41,8 +41,9 @@ class Worker(host: String, port: Int, cores: Int, memory: Int, masterUrl: String
   def active(master: ActorRef): Receive = {
     case RegisteredWorker() =>
       logInfo("registered to master")
-    case Terminated(actor) =>
+    case Terminated(`master`) =>
       logInfo("master down")
+      context.system.terminate()
     case _ =>
   }
 
