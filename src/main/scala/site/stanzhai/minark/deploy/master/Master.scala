@@ -1,7 +1,6 @@
 package site.stanzhai.minark.deploy.master
 
 import akka.actor.{Actor, Props}
-import akka.actor.Actor.Receive
 import akka.actor.Terminated
 
 import site.stanzhai.minark.deploy.DeployMessages._
@@ -15,6 +14,7 @@ class Master extends Actor with Logging {
 
   override def receive: Receive = {
     case RegisterWorker(id, host, port, cores, memory) =>
+      sender() ! RegisteredWorker()
       logInfo(id)
     case Terminated(actor) =>
       logInfo(s"$actor terminated")

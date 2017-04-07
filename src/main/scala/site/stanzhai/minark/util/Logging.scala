@@ -1,5 +1,6 @@
 package site.stanzhai.minark.util
 
+import org.apache.log4j.PropertyConfigurator
 import org.slf4j.{Logger, LoggerFactory}
 
 /**
@@ -14,6 +15,7 @@ trait Logging {
 
   protected def log: Logger = {
     if (_log == null) {
+      initIfNecessary()
       _log = LoggerFactory.getLogger(logName)
     }
     _log
@@ -38,4 +40,20 @@ trait Logging {
   protected def logError(msg: => String) {
     if (log.isErrorEnabled) log.error(msg)
   }
+
+  private def initIfNecessary(): Unit = {
+    if (!Logging.initialized) {
+      Logging.initLocker.synchronized {
+        if (!Logging.initialized) {
+          PropertyConfigurator.configure("conf/log4j.properties")
+          Logging.initialized = true
+        }
+      }
+    }
+  }
+}
+
+private object Logging {
+  @volatile var initialized: Boolean = false
+  val initLocker = new Object()
 }

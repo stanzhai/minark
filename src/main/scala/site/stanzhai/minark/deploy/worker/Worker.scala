@@ -2,7 +2,7 @@ package site.stanzhai.minark.deploy.worker
 
 import scala.concurrent.duration._
 
-import akka.actor.{Actor, ActorIdentity, ActorRef, ActorSelection, Identify, Props, ReceiveTimeout}
+import akka.actor.{Actor, ActorIdentity, ActorRef, Identify, Props, ReceiveTimeout, Terminated}
 
 import site.stanzhai.minark.deploy.DeployMessages._
 import site.stanzhai.minark.deploy.master.Master
@@ -39,6 +39,10 @@ class Worker(host: String, port: Int, cores: Int, memory: Int, masterUrl: String
   }
 
   def active(master: ActorRef): Receive = {
+    case RegisteredWorker() =>
+      logInfo("registered to master")
+    case Terminated(actor) =>
+      logInfo("master down")
     case _ =>
   }
 
