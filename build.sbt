@@ -8,6 +8,7 @@ libraryDependencies ++= {
   val akkaVersion = "2.4.17"
 
   Seq(
-    "com.typesafe.akka" %% "akka-remote" % akkaVersion
+    "com.typesafe.akka" %% "akka-remote" % akkaVersion,
+    "org.slf4j" % "slf4j-log4j12" % "1.7.21"
   )
 }
