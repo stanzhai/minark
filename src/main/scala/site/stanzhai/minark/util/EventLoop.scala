@@ -42,6 +42,10 @@ abstract class EventLoop[E](name: String) {
     eventThread.start()
   }
 
+  def post(event: E): Unit = {
+    eventQueue.put(event)
+  }
+
   def isActive: Boolean = eventThread.isAlive
 
   def stop(): Unit = {
@@ -63,11 +67,11 @@ abstract class EventLoop[E](name: String) {
     }
   }
 
-  protected def onStart(): Unit
+  protected def onStart(): Unit = {}
 
   protected def onReceived(event: E): Unit
 
-  protected def onStop(): Unit
+  protected def onStop(): Unit = {}
 
   protected def onError(e: Throwable): Unit
 }
