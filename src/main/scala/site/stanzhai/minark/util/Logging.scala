@@ -41,6 +41,10 @@ trait Logging {
     if (log.isErrorEnabled) log.error(msg)
   }
 
+  protected def logError(msg: => String, e: Throwable) {
+    if (log.isErrorEnabled) log.error(msg, e)
+  }
+
   private def initIfNecessary(): Unit = {
     if (!Logging.initialized) {
       Logging.initLocker.synchronized {

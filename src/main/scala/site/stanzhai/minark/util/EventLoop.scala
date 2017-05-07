@@ -8,7 +8,7 @@ import scala.util.control.NonFatal
 /**
  * Created by stan on 2017/5/7.
  */
-abstract class EventLoop[E](name: String) {
+abstract class EventLoop[E](name: String) extends Logging {
 
   private val eventQueue: BlockingQueue[E] = new LinkedBlockingDeque[E]()
   private val stopped = new AtomicBoolean(false)
@@ -30,6 +30,7 @@ abstract class EventLoop[E](name: String) {
       } catch {
         case ie: InterruptedException =>
         case NonFatal(e) =>
+          logError(s"Unexpected error in $name", e)
       }
     }
   }
