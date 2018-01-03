@@ -1,10 +1,9 @@
 package site.stanzhai.minark.deploy.master
 
 import scala.collection.mutable
-
 import akka.actor.{Actor, ActorRef, Props}
 import akka.actor.Terminated
-
+import site.stanzhai.minark.MinarkConf
 import site.stanzhai.minark.deploy.DeployMessages._
 import site.stanzhai.minark.util.AkkaUtils
 import site.stanzhai.minark.util.Logging
@@ -70,7 +69,8 @@ object Master {
   }
 
   def main(args: Array[String]): Unit = {
-    val akkaSystem = AkkaUtils.createActorSystem(actorSystemName, "0.0.0.0", 3332)
+    val conf = new MinarkConf()
+    val akkaSystem = AkkaUtils.createActorSystem(actorSystemName, "0.0.0.0", conf.MasterPort)
     akkaSystem.actorOf(Master.props(), actorName)
   }
 }
