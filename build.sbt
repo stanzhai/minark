@@ -9,7 +9,7 @@ lazy val cp = taskKey[String]("dependency class path")
 cp := s"java -cp ${(dependencyClasspath in Compile).map(_.files.mkString(":")).value}:${target.value}/scala-${scalaBinaryVersion.value}/classes"
 
 libraryDependencies ++= {
-  val akkaVersion = "2.5.8"
+  val akkaVersion = "2.5.14"
   val scalatestVersion = "3.0.1"
 
   Seq(
